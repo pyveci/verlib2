@@ -290,6 +290,13 @@ class Version(_BaseVersion):
         return self._version.release
 
     @property
+    def version(self) -> Tuple[int, ...]:
+        """
+        Return version tuple for backward-compatibility with `distutils.version`.
+        """
+        return self.release
+
+    @property
     def pre(self) -> Optional[Tuple[str, int]]:
         """The pre-release segment of the version.
 
