@@ -59,9 +59,9 @@ dependencies = [
 [project.optional-dependencies]
 develop = [
   "black<23",
-  "mypy==1.6.0",
+  "mypy==1.6",
   "poethepoet<1",
-  "pyproject-fmt<1.3",
+  "pyproject-fmt<1.4",
   "ruff==0.0.292",
   "validate-pyproject<0.16",
 ]
@@ -80,7 +80,6 @@ packages = ["verlib2"]
 
 [project.urls]
 Repository = "https://github.com/panodata/verlib2"
-
 [tool.pytest.ini_options]
 minversion = "2.0"
 addopts = """
