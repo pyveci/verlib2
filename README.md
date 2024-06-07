@@ -1,10 +1,10 @@
 # verlib2
 
-[![Tests](https://github.com/panodata/verlib2/actions/workflows/main.yml/badge.svg)](https://github.com/panodata/verlib2/actions/workflows/main.yml)
-[![Test coverage](https://img.shields.io/codecov/c/gh/panodata/verlib2.svg)](https://codecov.io/gh/panodata/verlib2/)
+[![Tests](https://github.com/pyveci/verlib2/actions/workflows/main.yml/badge.svg)](https://github.com/pyveci/verlib2/actions/workflows/main.yml)
+[![Test coverage](https://img.shields.io/codecov/c/gh/pyveci/verlib2.svg)](https://codecov.io/gh/pyveci/verlib2/)
 [![Python versions](https://img.shields.io/pypi/pyversions/verlib2.svg)](https://pypi.org/project/verlib2/)
 
-[![License](https://img.shields.io/github/license/panodata/verlib2.svg)](https://github.com/panodata/verlib2/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/pyveci/verlib2.svg)](https://github.com/pyveci/verlib2/blob/main/LICENSE)
 [![Status](https://img.shields.io/pypi/status/verlib2.svg)](https://pypi.org/project/verlib2/)
 [![PyPI](https://img.shields.io/pypi/v/verlib2.svg)](https://pypi.org/project/verlib2/)
 [![Downloads](https://pepy.tech/badge/verlib2/month)](https://www.pepy.tech/projects/verlib2)
@@ -18,12 +18,12 @@
 | [Source code]
 | [License]
 
-[Changelog]: https://github.com/panodata/verlib2/blob/main/CHANGES.md
+[Changelog]: https://github.com/pyveci/verlib2/blob/main/CHANGES.md
 [Documentation]: https://verlib2.readthedocs.io/
-[Issues]: https://github.com/panodata/verlib2/issues
-[License]: https://github.com/panodata/verlib2/blob/main/LICENSE
+[Issues]: https://github.com/pyveci/verlib2/issues
+[License]: https://github.com/pyveci/verlib2/blob/main/LICENSE
 [PyPI]: https://pypi.org/project/verlib2/
-[Source code]: https://github.com/panodata/verlib2
+[Source code]: https://github.com/pyveci/verlib2
 
 
 ## About

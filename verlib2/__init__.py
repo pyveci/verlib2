@@ -4,7 +4,7 @@
 
 __title__ = "verlib2"
 __summary__ = "A standalone variant of packaging.version, without anything else"
-__uri__ = "https://github.com/panodata/verlib2"
+__uri__ = "https://github.com/pyveci/verlib2"
 
 __version__ = "0.1.0"
 

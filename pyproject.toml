@@ -79,7 +79,7 @@ test = [
 packages = ["verlib2"]
 
 [project.urls]
-Repository = "https://github.com/panodata/verlib2"
+Repository = "https://github.com/pyveci/verlib2"
 [tool.pytest.ini_options]
 minversion = "2.0"
 addopts = """
