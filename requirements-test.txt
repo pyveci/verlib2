@@ -4,4 +4,4 @@
 poethepoet<1
 pretend<2
 pytest<9
-pytest-cov<6
+pytest-cov<7
