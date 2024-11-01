@@ -58,7 +58,7 @@ optional-dependencies.develop = [
   "poethepoet<1",
   "pyproject-fmt<2.3",
   "ruff<0.7",
-  "validate-pyproject<0.21",
+  "validate-pyproject<0.23",
 ]
 optional-dependencies.release = [
   "build<2",
