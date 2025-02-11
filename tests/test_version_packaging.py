@@ -8,7 +8,7 @@ import operator
 import pretend
 import pytest
 
-from verlib2.version import InvalidVersion, Version, parse
+from verlib2.packaging.version import InvalidVersion, Version, parse
 
 
 def test_parse():

@@ -15,4 +15,4 @@ __license__ = "BSD-2-Clause or Apache-2.0"
 __copyright__ = "2014 %s" % __author__
 
 
-from .version import Version  # noqa: F401
+from verlib2.packaging.version import Version  # noqa: F401
