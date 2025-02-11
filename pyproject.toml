@@ -51,6 +51,7 @@ dynamic = [
 ]
 
 dependencies = [
+  "importlib-metadata; python_version<'3.8'",
 ]
 
 optional-dependencies.develop = [
