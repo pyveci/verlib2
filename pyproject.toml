@@ -137,12 +137,17 @@ show_missing = true
 
 [tool.mypy]
 packages = [ "verlib2" ]
-strict = true
-show_error_codes = true
+check_untyped_defs = true
 enable_error_code = [ "ignore-without-code", "redundant-expr", "truthy-bool" ]
 exclude = [
   "verlib2/distutils/version.py",
 ]
+ignore_missing_imports = true
+implicit_optional = true
+install_types = true
+non_interactive = true
+show_error_codes = true
+strict = true
 
 [tool.versioningit.vcs]
 method = "git"
