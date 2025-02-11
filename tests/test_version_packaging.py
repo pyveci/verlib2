@@ -627,9 +627,8 @@ class TestVersion:
         # Below we'll generate every possible combination of VERSIONS that
         # should be True for the given operator
         itertools.chain(
-            *
             # Verify that the less than (<) operator works correctly
-            [
+            *[
                 [(x, y, operator.lt) for y in VERSIONS[i + 1 :]]
                 for i, x in enumerate(VERSIONS)
             ]
@@ -670,9 +669,8 @@ class TestVersion:
         # Below we'll generate every possible combination of VERSIONS that
         # should be False for the given operator
         itertools.chain(
-            *
             # Verify that the less than (<) operator works correctly
-            [
+            *[
                 [(x, y, operator.lt) for y in VERSIONS[: i + 1]]
                 for i, x in enumerate(VERSIONS)
             ]
