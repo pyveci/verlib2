@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+
+## 2025-02-11 v0.3.1
 - Fixed packaging
 
 ## 2025-02-11 v0.3.0
