@@ -13,7 +13,7 @@ requires = [
 
 [project]
 name = "verlib2"
-description = "A standalone variant of packaging.version, without anything else."
+description = "A standalone variant of `distutils.version` and `packaging.version`, without anything else."
 readme = "README.md"
 keywords = [
   "distutils",
@@ -139,6 +139,9 @@ packages = [ "verlib2" ]
 strict = true
 show_error_codes = true
 enable_error_code = [ "ignore-without-code", "redundant-expr", "truthy-bool" ]
+exclude = [
+  "verlib2/distutils/version.py",
+]
 
 [tool.versioningit.vcs]
 method = "git"

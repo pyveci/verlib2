@@ -28,9 +28,13 @@
 
 ## About
 
-A standalone variant of `packaging.version`, without anything else.
+A standalone variant of `distutils.version` and `packaging.version`,
+without anything else.
 
-[verlib] is the implementation of [PEP 386]. [verlib2] is the implementation of [PEP 440]. 
+[verlib] is the implementation of [PEP 386].
+[verlib2] is the implementation of [PEP 440]. 
+It also includes the original `distutils.version` implementation,
+for those who need it going forward.
 
 
 ## Rationale
@@ -47,18 +51,25 @@ pip install verlib2
 
 
 ## Usage
-```
+```python
 from verlib2 import Version
 
 assert Version("1.0.dev456") < Version("1!1.2.rev33+123456") 
 ```
 
+Note: `verlib2.Version` provides packaging's `Version`, while
+both implementations can be accessed like this:
+```python
+from verlib2.distutils.version import LooseVersion, StrictVersion
+from verlib2.packaging.version import Version
+```
+
 
 ## Acknowledgements
 
-Tarek Ziadé, Donald Stufft, and all contributors to `distutilsversion`, `verlib`,
-`distutils`, `distutils2`, `packaging.version`, PEP-0386, PEP-0440, and most
-probably more.
+Greg Stein, Greg Ward, Donald Stufft, Tarek Ziadé, and all contributors to
+`distutilsversion`, `verlib`, `distutils`, `distutils2`, `packaging.version`,
+PEP-0386, PEP-0440, and most probably many more.
 
 
 ## Prior Art
