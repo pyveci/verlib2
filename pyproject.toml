@@ -73,8 +73,7 @@ optional-dependencies.test = [
 urls.Repository = "https://github.com/pyveci/verlib2"
 
 [tool.setuptools]
-# https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
-packages = [ "verlib2" ]
+packages.find = {}
 
 [tool.ruff]
 #line-length = 120

@@ -2,6 +2,7 @@
 
 
 ## Unreleased
+- Fixed packaging
 
 ## 2025-02-11 v0.3.0
 - Added original `distutils/version.py` from Python 3.11.11.
