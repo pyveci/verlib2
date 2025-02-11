@@ -5,6 +5,7 @@
 - Added original `distutils/version.py` from Python 3.11.11.
   Because some custom version implementations derive from it,
   it is a good idea to have it around for Python 3.12 and higher.
+- Fixed `verlib2.__version__`, now using `importlib.metadata`.
 
 ## 2025-02-02 v0.2.1
 - Maintenance release including a minor change about a `mypy`
