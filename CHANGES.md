@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+
+## 2025-02-11 v0.3.0
 - Added original `distutils/version.py` from Python 3.11.11.
   Because some custom version implementations derive from it,
   it is a good idea to have it around for Python 3.12 and higher.
