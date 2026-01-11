@@ -108,6 +108,13 @@ poe check
 ```
 
 
+## Supported by
+
+[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
+
+Special thanks to the people at JetBrains s.r.o. for supporting us with
+excellent development tooling.
+
 
 [verlib]: https://pypi.org/project/verlib/
 [verlib2]: https://pypi.org/project/verlib2/
