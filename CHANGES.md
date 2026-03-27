@@ -2,6 +2,7 @@
 
 
 ## Unreleased
+- Maintenance: Added `py.typed` marker file, signalling typing support
 
 ## 2025-02-11 v0.3.1
 - Fixed packaging
