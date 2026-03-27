@@ -2,13 +2,16 @@
 
 import pytest
 
-import verlib2
-from verlib2.distutils.version import LooseVersion, StrictVersion
+from verlib2.distutils.version import (
+    LooseVersion,
+    StrictVersion,
+    suppress_known_deprecation,
+)
 
 
 @pytest.fixture(autouse=True)
 def suppress_deprecation():
-    with verlib2.distutils.version.suppress_known_deprecation():
+    with suppress_known_deprecation():
         yield
 
 
