@@ -59,6 +59,12 @@ class Version:
             stacklevel=2,
         )
 
+    def parse(self, vstring):
+        raise NotImplementedError("Child class must implement parse")
+
+    def _cmp(self, other):
+        raise NotImplementedError("Child class must implement _cmp")
+
     def __repr__(self):
         return f"{self.__class__.__name__} ('{self}')"
 
@@ -171,7 +177,7 @@ class StrictVersion(Version):
         if self.version[2] == 0:
             vstring = ".".join(map(str, self.version[0:2]))
         else:
-            vstring = ".".join(map(str, self.version))
+            vstring = ".".join(map(str, self.version))  # ty: ignore[invalid-argument-type]
 
         if self.prerelease:
             vstring = vstring + self.prerelease[0] + str(self.prerelease[1])

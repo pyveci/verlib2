@@ -56,10 +56,10 @@ dependencies = [
 ]
 
 optional-dependencies.develop = [
-  "mypy<1.20",
   "poethepoet<1",
   "pyproject-fmt<3",
   "ruff<0.16",
+  "ty==0.0.26",
   "validate-pyproject<1",
 ]
 optional-dependencies.release = [
@@ -134,20 +134,6 @@ exclude_lines = [ "pragma: no cover" ]
 fail_under = 0
 show_missing = true
 
-[tool.mypy]
-packages = [ "verlib2" ]
-check_untyped_defs = true
-enable_error_code = [ "ignore-without-code", "redundant-expr", "truthy-bool" ]
-exclude = [
-  "verlib2/distutils/version.py",
-]
-ignore_missing_imports = true
-implicit_optional = true
-install_types = true
-non_interactive = true
-show_error_codes = true
-strict = true
-
 [tool.versioningit]
 vcs.method = "git-archive"
 vcs.default-tag = "v0.0.0"
@@ -170,7 +156,7 @@ lint = [
   { cmd = "ruff format --check ." },
   { cmd = "ruff check ." },
   { cmd = "validate-pyproject pyproject.toml" },
-  { cmd = "mypy" },
+  { cmd = "ty check" },
 ]
 test = [
   { cmd = "pytest" },
