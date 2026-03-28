@@ -69,7 +69,7 @@ jobs:
         pip install --use-pep517 --prefer-binary --editable=.[develop,test]
 
     - name: Check code style
-      if: matrix.python-version != '3.6' && matrix.python-version != 'pypy-3.6'
+      if: matrix.python-version != '3.7' && matrix.python-version != 'pypy-3.7'
       run: |
         poe lint
 
