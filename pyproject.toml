@@ -130,7 +130,7 @@ omit = [
 ]
 
 [tool.coverage.report]
-exclude_lines = [ "pragma: no cover", "@abc.abstractmethod", "@abc.abstractproperty" ]
+exclude_lines = [ "pragma: no cover" ]
 fail_under = 0
 show_missing = true
 
@@ -148,9 +148,10 @@ non_interactive = true
 show_error_codes = true
 strict = true
 
-[tool.versioningit.vcs]
-method = "git"
-default-tag = "0.0.0"
+[tool.versioningit]
+vcs.method = "git-archive"
+vcs.default-tag = "v0.0.0"
+vcs.describe-subst = "$Format:%(describe:tags,match=v*)$"
 
 # ===================
 # Tasks configuration
