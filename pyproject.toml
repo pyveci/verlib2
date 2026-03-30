@@ -11,12 +11,15 @@ requires = [
 
 [project]
 name = "verlib2"
-description = "A standalone variant of `distutils.version` and `packaging.version`, without anything else."
+description = 'A standalone variant of "distutils.version" and "packaging.version", without anything else.'
 readme = "README.md"
 keywords = [
   "distutils",
   "packaging",
+  "pep386",
+  "pep440",
   "version",
+  "versioning",
 ]
 maintainers = [
   { name = "Andreas Motl", email = "andreas.motl@panodata.org" },
@@ -26,6 +29,8 @@ requires-python = ">=3.6"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: System Administrators",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.6",
@@ -41,6 +46,10 @@ classifiers = [
   "Programming Language :: Python :: Free Threading",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: Software Development :: Build Tools",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Software Development :: Testing",
   "Typing :: Typed",
 ]
 dynamic = [
@@ -65,7 +74,7 @@ optional-dependencies.test = [
   "pytest<9",
   "pytest-cov<8",
 ]
-urls.Repository = "https://github.com/pyveci/verlib2"
+urls.repository = "https://github.com/pyveci/verlib2"
 
 [tool.setuptools]
 packages.find = {}
