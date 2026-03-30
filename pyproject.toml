@@ -11,7 +11,7 @@ requires = [
 
 [project]
 name = "verlib2"
-description = 'A standalone variant of "distutils.version" and "packaging.version", without anything else.'
+description = 'A standalone bundle of "distutils.version" and "packaging.version", without anything else.'
 readme = "README.md"
 keywords = [
   "distutils",
