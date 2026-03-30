@@ -25,7 +25,6 @@ jobs:
         os:
           - "ubuntu-22.04"
         python-version:
-          - "3.7"
           - "3.8"
           - "3.9"
           - "3.10"
@@ -55,14 +54,9 @@ jobs:
       run: |
         uv pip install --editable='.[develop,test]'
 
-    - name: Check code style
-      if: matrix.python-version != '3.7' && matrix.python-version != 'pypy-3.7'
+    - name: Validate project
       run: |
-        poe lint
-
-    - name: Run software tests
-      run: |
-        poe test
+        poe check
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
@@ -81,6 +75,7 @@ jobs:
           - "ubuntu-22.04"
         python-version:
           - "3.6"
+          - "3.7"
 
     name: Python ${{ matrix.python-version }} on OS ${{ matrix.os }}
     steps:
