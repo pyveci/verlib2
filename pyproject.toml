@@ -1,9 +1,7 @@
 # ==================
 # Project definition
 # ==================
-
 # Derived from https://peps.python.org/pep-0621/
-
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
@@ -45,15 +43,12 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
   "Typing :: Typed",
 ]
-
 dynamic = [
   "version",
 ]
-
 dependencies = [
   "importlib-metadata; python_version<'3.8'",
 ]
-
 optional-dependencies.develop = [
   "poethepoet<1",
   "pyproject-fmt<3",
@@ -76,8 +71,7 @@ urls.Repository = "https://github.com/pyveci/verlib2"
 packages.find = {}
 
 [tool.ruff]
-#line-length = 120
-
+# line-length = 120
 lint.select = [
   # Builtins
   "A",
@@ -105,68 +99,61 @@ lint.select = [
   # flake8-2020
   "YTT",
 ]
-
 lint.ignore = [ "RET505" ]
-lint.per-file-ignores."tests/*" = [ "S101" ] # Use of `assert` detected
+lint.per-file-ignores."tests/*" = [ "S101" ]  # Use of `assert` detected
 
-[tool.pytest.ini_options]
-minversion = "2.0"
-addopts = """
+[tool.pytest]
+ini_options.minversion = "2.0"
+ini_options.addopts = """
   -rfEX -p pytester --strict-markers --verbosity=3
   --cov --cov-report=term-missing --cov-report=xml
   """
-log_level = "DEBUG"
-log_cli_level = "DEBUG"
-testpaths = [ "tests" ]
-xfail_strict = true
-markers = [
-]
+ini_options.log_level = "DEBUG"
+ini_options.log_cli_level = "DEBUG"
+ini_options.testpaths = [ "tests" ]
+ini_options.xfail_strict = true
+ini_options.markers = []
 
-[tool.coverage.run]
-branch = true
-omit = [
+[tool.coverage]
+run.branch = true
+run.omit = [
   "tests/*",
 ]
-
-[tool.coverage.report]
-exclude_lines = [ "pragma: no cover" ]
-fail_under = 0
-show_missing = true
+report.exclude_lines = [ "pragma: no cover" ]
+report.fail_under = 0
+report.show_missing = true
 
 [tool.versioningit]
 vcs.method = "git-archive"
 vcs.default-tag = "v0.0.0"
 vcs.describe-subst = "$Format:%(describe:tags,match=v*)$"
 
+[tool.poe]
 # ===================
 # Tasks configuration
 # ===================
-
-[tool.poe.tasks]
-format = [
+tasks.format = [
   { cmd = "ruff format ." },
   # Configure Ruff not to auto-fix (remove!):
   # Ignore unused imports (F401), unused variables (F841), `print` statements (T201), and commented-out code (ERA001).
   { cmd = "ruff check --fix --ignore=ERA --ignore=F401 --ignore=F841 --ignore=T20 --ignore=ERA001 ." },
   { cmd = "pyproject-fmt --keep-full-version pyproject.toml" },
 ]
-
-lint = [
+tasks.lint = [
   { cmd = "ruff format --check ." },
   { cmd = "ruff check ." },
   { cmd = "validate-pyproject pyproject.toml" },
   { cmd = "ty check" },
 ]
-test = [
+tasks.test = [
   { cmd = "pytest" },
 ]
-test-fast = [
+tasks.test-fast = [
   { cmd = "pytest -m 'not slow'" },
 ]
-build = { cmd = "python -m build" }
-check = [ "lint", "test" ]
-
-release = [
+tasks.build = { cmd = "python -m build" }
+tasks.check = [ "lint", "test" ]
+tasks.release = [
   { cmd = "python -m build" },
   { cmd = "twine upload --skip-existing dist/*.tar.gz dist/*.whl" },
 ]
