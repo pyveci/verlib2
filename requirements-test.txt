@@ -1,5 +1,8 @@
 # Needed for testing on Python 3.6
 
+# runtime
+importlib-metadata; python_version<'3.8'
+
 # tests
 poethepoet<1
 pretend<2
