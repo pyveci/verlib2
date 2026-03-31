@@ -4,7 +4,6 @@
 importlib-metadata; python_version<'3.8'
 
 # tests
-poethepoet<1
 pretend<2
 pytest<9
 pytest-cov<8
