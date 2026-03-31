@@ -36,6 +36,8 @@ without anything else.
 It also includes the original `distutils.version` implementation,
 for those who need it going forward.
 
+To retain backward compatibility with earlier versions of Python,
+syntax features like [PEP 570] have been removed from the original code.
 
 ## Rationale
 
@@ -120,3 +122,4 @@ excellent development tooling.
 [verlib2]: https://pypi.org/project/verlib2/
 [PEP 386]: https://peps.python.org/pep-0386/
 [PEP 440]: https://peps.python.org/pep-0440/
+[PEP 570]: https://peps.python.org/pep-0570/
