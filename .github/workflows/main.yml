@@ -74,6 +74,13 @@ jobs:
         os:
           - "ubuntu-22.04"
         python-version:
+          - "2.7"
+          - "3.0"
+          - "3.1"
+          - "3.2"
+          - "3.3"
+          - "3.4"
+          - "3.5"
           - "3.6"
           - "3.7"
 
@@ -88,15 +95,14 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install project (Python 3.6)
-      if: matrix.python-version == '3.6' || matrix.python-version == 'pypy-3.6'
+    - name: Install project (Python 3.6 and before)
       run: |
         # Python 3.6 does not understand `pyproject.toml` setups,
         # so install the requirements from dedicated file.
         pip install --requirement requirements-test.txt
 
     - name: Install project (Python 3.7+)
-      if: matrix.python-version != '3.6' && matrix.python-version != 'pypy-3.6'
+      if: matrix.python-version == '3.7' && matrix.python-version == 'pypy-3.7'
       run: |
         # `setuptools 0.64.0` adds support for editable install hooks (PEP 660).
         # https://github.com/pypa/setuptools/blob/main/CHANGES.rst#v6400
