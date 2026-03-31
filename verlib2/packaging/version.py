@@ -13,13 +13,17 @@ import typing
 from typing import (
     Any,
     Callable,
-    Literal,
     NamedTuple,
     SupportsInt,
     Tuple,
     TypedDict,
     Union,
 )
+
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
 from ._structures import Infinity, InfinityType, NegativeInfinity, NegativeInfinityType
 
