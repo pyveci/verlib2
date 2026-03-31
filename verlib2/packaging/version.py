@@ -235,7 +235,7 @@ flags set.
 _LOCAL_PATTERN = re.compile(r"[a-z0-9]+(?:[._-][a-z0-9]+)*", re.IGNORECASE)
 
 
-def _validate_epoch(value: object, /) -> int:
+def _validate_epoch(value: object) -> int:
     epoch = value or 0
     if isinstance(epoch, int) and epoch >= 0:
         return epoch
@@ -243,19 +243,19 @@ def _validate_epoch(value: object, /) -> int:
     raise InvalidVersion(msg)
 
 
-def _validate_release(value: object, /) -> tuple[int, ...]:
+def _validate_release(value: object) -> tuple[int, ...]:
     release = (0,) if value is None else value
     if (
         isinstance(release, tuple)
         and len(release) > 0
         and all(isinstance(i, int) and i >= 0 for i in release)
     ):
-        return release
+        return release  # ty: ignore[invalid-return-type]
     msg = f"release must be a non-empty tuple of non-negative integers, got {release}"
     raise InvalidVersion(msg)
 
 
-def _validate_pre(value: object, /) -> tuple[Literal["a", "b", "rc"], int] | None:
+def _validate_pre(value: object) -> tuple[Literal["a", "b", "rc"], int] | None:
     if value is None:
         return value
     if (
@@ -265,12 +265,12 @@ def _validate_pre(value: object, /) -> tuple[Literal["a", "b", "rc"], int] | Non
         and isinstance(value[1], int)
         and value[1] >= 0
     ):
-        return value
+        return value  # ty: ignore[invalid-return-type]
     msg = f"pre must be a tuple of ('a'|'b'|'rc', non-negative int), got {value}"
     raise InvalidVersion(msg)
 
 
-def _validate_post(value: object, /) -> tuple[Literal["post"], int] | None:
+def _validate_post(value: object) -> tuple[Literal["post"], int] | None:
     if value is None:
         return value
     if isinstance(value, int) and value >= 0:
@@ -279,7 +279,7 @@ def _validate_post(value: object, /) -> tuple[Literal["post"], int] | None:
     raise InvalidVersion(msg)
 
 
-def _validate_dev(value: object, /) -> tuple[Literal["dev"], int] | None:
+def _validate_dev(value: object) -> tuple[Literal["dev"], int] | None:
     if value is None:
         return value
     if isinstance(value, int) and value >= 0:
@@ -288,7 +288,7 @@ def _validate_dev(value: object, /) -> tuple[Literal["dev"], int] | None:
     raise InvalidVersion(msg)
 
 
-def _validate_local(value: object, /) -> LocalType | None:
+def _validate_local(value: object) -> LocalType | None:
     if value is None:
         return value
     if isinstance(value, str) and _LOCAL_PATTERN.fullmatch(value):
