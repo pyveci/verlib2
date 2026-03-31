@@ -4,6 +4,7 @@
 ## Unreleased
 - Maintenance: Added `py.typed` marker file, signalling typing support
 - packaging.version: Updated to packaging v26.0
+- packaging.version: Restored backward-compatibility with `distutils.version`
 
 ## 2025-02-11 v0.3.1
 - Fixed packaging
