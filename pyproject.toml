@@ -47,7 +47,7 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "importlib-metadata; python_version<'3.8'",
+  "importlib-metadata; python_version>='3.0' and python_version<'3.8'",
 ]
 optional-dependencies.develop = [
   "poethepoet<1",
