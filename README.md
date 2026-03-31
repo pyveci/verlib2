@@ -34,6 +34,9 @@ without anything else.
 [packaging.version] is the implementation of [PEP 440].
 [verlib2] bundles both of them into a standalone package.
 
+To retain backward compatibility with earlier versions of Python,
+syntax features like [PEP 570] have been removed from the original code.
+
 ## Rationale
 
 Everyone needs to compare versions, but no one wants to add `packaging` as a dependency.
@@ -122,6 +125,7 @@ excellent development tooling.
 [pep440-version-utils]: https://pypi.org/project/pep440-version-utils/
 [PEP 386]: https://peps.python.org/pep-0386/
 [PEP 440]: https://peps.python.org/pep-0440/
+[PEP 570]: https://peps.python.org/pep-0570/
 [PEP 632]: https://peps.python.org/pep-0632/
 [started]: https://github.com/numpy/numpy/pull/21000
 [verlib]: https://pypi.org/project/verlib/
