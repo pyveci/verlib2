@@ -95,3 +95,18 @@ class TestVersion:
         assert StrictVersion("1.2.3b2") > StrictVersion("1.2.3a1")
         assert repr(StrictVersion("1.2.3a1")) == "StrictVersion ('1.2.3a1')"
         assert repr(LooseVersion("1.2.3")) == "LooseVersion ('1.2.3')"
+
+    def test_parse(self):
+        from verlib2.distutils.version import Version
+
+        with pytest.raises(NotImplementedError) as excinfo:
+            Version().parse("1.2.3")
+        assert excinfo.match("Child class must implement parse")
+
+    def test_cmp(self):
+        from verlib2.distutils.version import Version
+
+        with pytest.raises(NotImplementedError) as excinfo:
+            other = Version()
+            Version()._cmp(other)
+        assert excinfo.match("Child class must implement _cmp")
