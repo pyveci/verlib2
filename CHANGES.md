@@ -2,6 +2,7 @@
 
 
 ## Unreleased
+- Maintenance: Updated to `packaging.version` v26.2
 
 ## 2026-07-08 v26.0
 - Maintenance: Updated to `packaging.version` v26.0
