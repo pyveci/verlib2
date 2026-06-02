@@ -84,7 +84,7 @@ jobs:
       uses: actions/checkout@v6
 
     - name: Install Python
-      uses: LizardByte/actions/actions/setup_python@2f67c4512b418fa42affd50e4f8aa456b687f1b8
+      uses: LizardByte/actions/actions/setup_python@6ce344aa11518f4c55c673e4d56c893c8b98efb6
       with:
         python-version: ${{ matrix.python-version }}
 
