@@ -177,7 +177,7 @@ class StrictVersion(Version):
         if self.version[2] == 0:
             vstring = ".".join(map(str, self.version[0:2]))
         else:
-            vstring = ".".join(map(str, self.version))  # ty: ignore[invalid-argument-type]
+            vstring = ".".join(map(str, self.version))
 
         if self.prerelease:
             vstring = vstring + self.prerelease[0] + str(self.prerelease[1])
