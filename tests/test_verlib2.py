@@ -12,7 +12,7 @@ def test_version():
         assert Version("0.0.0") <= Version(__version__)
     if sys.version_info >= (3, 8):
         assert LooseVersion("0.0.0") <= __version__
-        if "+" in __version__:
+        if "+" in __version__ or ".post" in __version__:
             with pytest.raises(ValueError) as ex:
                 _ = StrictVersion("0.0.0") <= __version__
             assert ex.match("invalid version number")
