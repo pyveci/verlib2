@@ -3,6 +3,7 @@
 
 ## Unreleased
 - Maintenance: Updated to `packaging.version` v26.2
+- packaging.version: Compatibility adjustments for Python 3.6 and 3.7
 
 ## 2026-07-08 v26.0
 - Maintenance: Updated to `packaging.version` v26.0
