@@ -7,21 +7,31 @@
     from packaging.version import parse, normalize_pre, Version, _cmpkey
 """
 
-from __future__ import annotations
-
 import re
 import sys
 import typing
 from typing import (
     Any,
     Callable,
-    Literal,
+    List,
     NamedTuple,
+    Optional,
     SupportsInt,
     Tuple,
-    TypedDict,
     Union,
+    cast,
 )
+
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
+
+try:
+    from typing import TypedDict
+except ImportError:
+    from typing_extensions import TypedDict
+
 
 if typing.TYPE_CHECKING:
     from typing_extensions import Self, Unpack
@@ -35,7 +45,7 @@ else:  # pragma: no cover
     import warnings
 
     def _deprecated(message: str) -> object:
-        def decorator(func: Callable[[...], object]) -> object:
+        def decorator(func: Callable[[Any], object]) -> object:
             @functools.wraps(func)
             def wrapper(*args: object, **kwargs: object) -> object:
                 warnings.warn(
@@ -63,7 +73,7 @@ _LETTER_NORMALIZATION = {
 __all__ = ["VERSION_PATTERN", "InvalidVersion", "Version", "normalize_pre", "parse"]
 
 
-def __dir__() -> list[str]:
+def __dir__() -> List[str]:
     return __all__
 
 
@@ -79,15 +89,15 @@ VersionComparisonMethod = Callable[[CmpKey, CmpKey], bool]
 
 
 class _VersionReplace(TypedDict, total=False):
-    epoch: int | None
-    release: tuple[int, ...] | None
-    pre: tuple[str, int] | None
-    post: int | None
-    dev: int | None
-    local: str | None
+    epoch: Optional[int]
+    release: Optional[Tuple[int, ...]]
+    pre: Optional[Tuple[str, int]]
+    post: Optional[int]
+    dev: Optional[int]
+    local: Optional[str]
 
 
-def normalize_pre(letter: str, /) -> str:
+def normalize_pre(letter: str) -> str:
     """Normalize the pre-release segment of a version string.
 
     Returns a lowercase version of the string if not a known pre-release
@@ -108,7 +118,7 @@ def normalize_pre(letter: str, /) -> str:
     return _LETTER_NORMALIZATION.get(letter, letter)
 
 
-def parse(version: str) -> Version:
+def parse(version: str) -> "Version":
     """Parse the given version string.
 
     This is identical to the :class:`Version` constructor.
@@ -141,7 +151,7 @@ class _BaseVersion:
     if typing.TYPE_CHECKING:
 
         @property
-        def _key(self) -> tuple[Any, ...]: ...
+        def _key(self) -> Tuple[Any, ...]: ...
 
     def __hash__(self) -> int:
         return hash(self._key)
@@ -149,13 +159,13 @@ class _BaseVersion:
     # Please keep the duplicated `isinstance` check
     # in the six comparisons hereunder
     # unless you find a way to avoid adding overhead function calls.
-    def __lt__(self, other: _BaseVersion) -> bool:
+    def __lt__(self, other: "_BaseVersion") -> bool:
         if not isinstance(other, _BaseVersion):
             return NotImplemented
 
         return self._key < other._key
 
-    def __le__(self, other: _BaseVersion) -> bool:
+    def __le__(self, other: "_BaseVersion") -> bool:
         if not isinstance(other, _BaseVersion):
             return NotImplemented
 
@@ -167,13 +177,13 @@ class _BaseVersion:
 
         return self._key == other._key
 
-    def __ge__(self, other: _BaseVersion) -> bool:
+    def __ge__(self, other: "_BaseVersion") -> bool:
         if not isinstance(other, _BaseVersion):
             return NotImplemented
 
         return self._key >= other._key
 
-    def __gt__(self, other: _BaseVersion) -> bool:
+    def __gt__(self, other: "_BaseVersion") -> bool:
         if not isinstance(other, _BaseVersion):
             return NotImplemented
 
@@ -226,7 +236,9 @@ _VERSION_PATTERN = r"""
     )?+
 """
 
-_VERSION_PATTERN_OLD = _VERSION_PATTERN.replace("*+", "*").replace("?+", "?")
+_VERSION_PATTERN_OLD = (
+    _VERSION_PATTERN.replace("*+", "*").replace("?+", "?").replace("a:", ":")
+)
 
 # Possessive qualifiers were added in Python 3.11.
 # CPython 3.11.0-3.11.4 had a bug: https://github.com/python/cpython/pull/107795
@@ -263,7 +275,7 @@ _LOCAL_PATTERN = re.compile(r"[a-z0-9]+(?:[._-][a-z0-9]+)*", re.IGNORECASE | re.
 _SIMPLE_VERSION_INDICATORS = frozenset(".0123456789")
 
 
-def _validate_epoch(value: object, /) -> int:
+def _validate_epoch(value: object) -> int:
     epoch = value or 0
     if isinstance(epoch, int) and epoch >= 0:
         return epoch
@@ -271,32 +283,32 @@ def _validate_epoch(value: object, /) -> int:
     raise InvalidVersion(msg)
 
 
-def _validate_release(value: object, /) -> tuple[int, ...]:
+def _validate_release(value: object) -> Tuple[int, ...]:
     release = (0,) if value is None else value
     if (
         isinstance(release, tuple)
         and len(release) > 0
         and all(isinstance(i, int) and i >= 0 for i in release)
     ):
-        return release
+        return release  # ty: ignore[invalid-return-type]
     msg = f"release must be a non-empty tuple of non-negative integers, got {release}"
     raise InvalidVersion(msg)
 
 
-def _validate_pre(value: object, /) -> tuple[Literal["a", "b", "rc"], int] | None:
+def _validate_pre(value: object) -> Optional[Tuple[Literal["a", "b", "rc"], int]]:
     if value is None:
         return value
     if isinstance(value, tuple) and len(value) == 2:
         letter, number = value
-        letter = normalize_pre(letter)
+        letter = normalize_pre(cast(str, letter))
         if letter in {"a", "b", "rc"} and isinstance(number, int) and number >= 0:
             # type checkers can't infer the Literal type here on letter
-            return (letter, number)  # type: ignore[return-value]
+            return (letter, number)  # ty: ignore[invalid-return-type]
     msg = f"pre must be a tuple of ('a'|'b'|'rc', non-negative int), got {value}"
     raise InvalidVersion(msg)
 
 
-def _validate_post(value: object, /) -> tuple[Literal["post"], int] | None:
+def _validate_post(value: object) -> Optional[Tuple[Literal["post"], int]]:
     if value is None:
         return value
     if isinstance(value, int) and value >= 0:
@@ -305,7 +317,7 @@ def _validate_post(value: object, /) -> tuple[Literal["post"], int] | None:
     raise InvalidVersion(msg)
 
 
-def _validate_dev(value: object, /) -> tuple[Literal["dev"], int] | None:
+def _validate_dev(value: object) -> Optional[Tuple[Literal["dev"], int]]:
     if value is None:
         return value
     if isinstance(value, int) and value >= 0:
@@ -314,7 +326,7 @@ def _validate_dev(value: object, /) -> tuple[Literal["dev"], int] | None:
     raise InvalidVersion(msg)
 
 
-def _validate_local(value: object, /) -> LocalType | None:
+def _validate_local(value: object) -> Optional[LocalType]:
     if value is None:
         return value
     if isinstance(value, str) and _LOCAL_PATTERN.fullmatch(value):
@@ -326,11 +338,11 @@ def _validate_local(value: object, /) -> LocalType | None:
 # Backward compatibility for internals before 26.0. Do not use.
 class _Version(NamedTuple):
     epoch: int
-    release: tuple[int, ...]
-    dev: tuple[Literal["dev"], int] | None
-    pre: tuple[Literal["a", "b", "rc"], int] | None
-    post: tuple[Literal["post"], int] | None
-    local: LocalType | None
+    release: Tuple[int, ...]
+    dev: Optional[Tuple[Literal["dev"], int]]
+    pre: Optional[Tuple[Literal["a", "b", "rc"], int]]
+    post: Optional[Tuple[Literal["post"], int]]
+    local: Optional[LocalType]
 
 
 class Version(_BaseVersion):
@@ -392,14 +404,14 @@ class Version(_BaseVersion):
     _regex = re.compile(r"\s*" + VERSION_PATTERN + r"\s*", re.VERBOSE | re.IGNORECASE)
 
     _epoch: int
-    _release: tuple[int, ...]
-    _dev: tuple[Literal["dev"], int] | None
-    _pre: tuple[Literal["a", "b", "rc"], int] | None
-    _post: tuple[Literal["post"], int] | None
-    _local: LocalType | None
+    _release: Tuple[int, ...]
+    _dev: Optional[Tuple[Literal["dev"], int]]
+    _pre: Optional[Tuple[Literal["a", "b", "rc"], int]]
+    _post: Optional[Tuple[Literal["post"], int]]
+    _local: Optional[LocalType]
 
-    _hash_cache: int | None
-    _key_cache: CmpKey | None
+    _hash_cache: Optional[int]
+    _key_cache: Optional[CmpKey]
 
     def __init__(self, version: str) -> None:
         """Initialize a Version object.
@@ -440,11 +452,11 @@ class Version(_BaseVersion):
         self._release = tuple(map(int, match.group("release").split(".")))
         # We can type ignore the assignments below because the regex guarantees
         # the correct strings
-        self._pre = _parse_letter_version(match.group("pre_l"), match.group("pre_n"))  # type: ignore[assignment]
-        self._post = _parse_letter_version(  # type: ignore[assignment]
+        self._pre = _parse_letter_version(match.group("pre_l"), match.group("pre_n"))  # ty: ignore[invalid-assignment]
+        self._post = _parse_letter_version(  # ty: ignore[invalid-assignment]
             match.group("post_l"), match.group("post_n1") or match.group("post_n2")
         )
-        self._dev = _parse_letter_version(match.group("dev_l"), match.group("dev_n"))  # type: ignore[assignment]
+        self._dev = _parse_letter_version(match.group("dev_l"), match.group("dev_n"))  # ty: ignore[invalid-assignment]
         self._local = _parse_local_version(match.group("local"))
 
         # Key which will be used for sorting
@@ -456,12 +468,12 @@ class Version(_BaseVersion):
         cls,
         *,
         epoch: int = 0,
-        release: tuple[int, ...],
-        pre: tuple[str, int] | None = None,
-        post: int | None = None,
-        dev: int | None = None,
-        local: str | None = None,
-    ) -> Self:
+        release: Tuple[int, ...],
+        pre: Optional[Tuple[str, int]] = None,
+        post: Optional[int] = None,
+        dev: Optional[int] = None,
+        local: Optional[str] = None,
+    ) -> "Self":
         """
         Return a new version composed of the various parts.
 
@@ -498,7 +510,7 @@ class Version(_BaseVersion):
 
         return new_version
 
-    def __replace__(self, **kwargs: Unpack[_VersionReplace]) -> Self:
+    def __replace__(self, **kwargs: "Unpack[_VersionReplace]") -> "Self":
         """
         __replace__(*, epoch=..., release=..., pre=..., post=..., dev=..., local=...)
 
@@ -512,8 +524,8 @@ class Version(_BaseVersion):
         <Version('1.2.3a1')>
 
         :param int | None epoch:
-        :param tuple[int, ...] | None release:
-        :param tuple[str, int] | None pre:
+        :param Tuple[int, ...] | None release:
+        :param Tuple[str, int] | None pre:
         :param int | None post:
         :param int | None dev:
         :param str | None local:
@@ -572,10 +584,12 @@ class Version(_BaseVersion):
     # __hash__ must be defined when __eq__ is overridden,
     # otherwise Python sets __hash__ to None.
     def __hash__(self) -> int:
-        if (cached_hash := self._hash_cache) is not None:
+        cached_hash = self._hash_cache
+        if cached_hash is not None:
             return cached_hash
 
-        if (key := self._key_cache) is None:
+        key = self._key_cache
+        if key is None:
             self._key_cache = key = _cmpkey(
                 self._epoch,
                 self._release,
@@ -589,7 +603,7 @@ class Version(_BaseVersion):
 
     # Override comparison methods to use direct _key_cache access
     # This is faster than property access, especially before Python 3.12
-    def __lt__(self, other: _BaseVersion) -> bool:
+    def __lt__(self, other: "_BaseVersion") -> bool:
         if isinstance(other, Version):
             if self._key_cache is None:
                 self._key_cache = _cmpkey(
@@ -616,7 +630,7 @@ class Version(_BaseVersion):
 
         return super().__lt__(other)
 
-    def __le__(self, other: _BaseVersion) -> bool:
+    def __le__(self, other: "_BaseVersion") -> bool:
         if isinstance(other, Version):
             if self._key_cache is None:
                 self._key_cache = _cmpkey(
@@ -670,7 +684,7 @@ class Version(_BaseVersion):
 
         return super().__eq__(other)
 
-    def __ge__(self, other: _BaseVersion) -> bool:
+    def __ge__(self, other: "_BaseVersion") -> bool:
         if isinstance(other, Version):
             if self._key_cache is None:
                 self._key_cache = _cmpkey(
@@ -697,7 +711,7 @@ class Version(_BaseVersion):
 
         return super().__ge__(other)
 
-    def __gt__(self, other: _BaseVersion) -> bool:
+    def __gt__(self, other: "_BaseVersion") -> bool:
         if isinstance(other, Version):
             if self._key_cache is None:
                 self._key_cache = _cmpkey(
@@ -753,16 +767,16 @@ class Version(_BaseVersion):
 
     def __getstate__(
         self,
-    ) -> tuple[
+    ) -> Tuple[
         int,
-        tuple[int, ...],
-        tuple[str, int] | None,
-        tuple[str, int] | None,
-        tuple[str, int] | None,
-        LocalType | None,
+        Tuple[int, ...],
+        Optional[Tuple[str, int]],
+        Optional[Tuple[str, int]],
+        Optional[Tuple[str, int]],
+        Optional[LocalType],
     ]:
         # Return state as a 6-item tuple for compactness:
-        #   (epoch, release, pre, post, dev, local)
+        #   (epoch, release, pre, post, dev, local)  # noqa: ERA001
         # Cache members are excluded and will be recomputed on demand
         return (
             self._epoch,
@@ -784,36 +798,36 @@ class Version(_BaseVersion):
             if len(state) == 6:
                 # New format (26.2+): (epoch, release, pre, post, dev, local)
                 (
-                    self._epoch,
-                    self._release,
-                    self._pre,
-                    self._post,
-                    self._dev,
-                    self._local,
+                    self._epoch,  # ty: ignore
+                    self._release,  # ty: ignore
+                    self._pre,  # ty: ignore
+                    self._post,  # ty: ignore
+                    self._dev,  # ty: ignore
+                    self._local,  # ty: ignore
                 ) = state
                 return
             if len(state) == 2:
                 # Format (packaging 26.0-26.1): (None, {slot: value}).
                 _, slot_dict = state
                 if isinstance(slot_dict, dict):
-                    self._epoch = slot_dict["_epoch"]
-                    self._release = slot_dict["_release"]
-                    self._pre = slot_dict.get("_pre")
-                    self._post = slot_dict.get("_post")
-                    self._dev = slot_dict.get("_dev")
-                    self._local = slot_dict.get("_local")
+                    self._epoch = slot_dict["_epoch"]  # ty: ignore
+                    self._release = slot_dict["_release"]  # ty: ignore
+                    self._pre = slot_dict.get("_pre")  # ty: ignore
+                    self._post = slot_dict.get("_post")  # ty: ignore
+                    self._dev = slot_dict.get("_dev")  # ty: ignore
+                    self._local = slot_dict.get("_local")  # ty: ignore
                     return
         if isinstance(state, dict):
             # Old format (packaging <= 25.x, no __slots__): state is a plain
             # dict with "_version" (_Version NamedTuple) and "_key" entries.
             version_nt = state.get("_version")
             if version_nt is not None:
-                self._epoch = version_nt.epoch
-                self._release = version_nt.release
-                self._pre = version_nt.pre
-                self._post = version_nt.post
-                self._dev = version_nt.dev
-                self._local = version_nt.local
+                self._epoch = version_nt.epoch  # ty: ignore
+                self._release = version_nt.release  # ty: ignore
+                self._pre = version_nt.pre  # ty: ignore
+                self._post = version_nt.post  # ty: ignore
+                self._dev = version_nt.dev  # ty: ignore
+                self._local = version_nt.local  # ty: ignore
                 return
 
         raise TypeError(f"Cannot restore Version from {state!r}")
@@ -893,7 +907,7 @@ class Version(_BaseVersion):
         return self._epoch
 
     @property
-    def release(self) -> tuple[int, ...]:
+    def release(self) -> Tuple[int, ...]:
         """The components of the "release" segment of the version.
 
         >>> Version("1.2.3").release
@@ -909,7 +923,7 @@ class Version(_BaseVersion):
         return self._release
 
     @property
-    def pre(self) -> tuple[Literal["a", "b", "rc"], int] | None:
+    def pre(self) -> Optional[Tuple[Literal["a", "b", "rc"], int]]:
         """The pre-release segment of the version.
 
         >>> print(Version("1.2.3").pre)
@@ -924,7 +938,7 @@ class Version(_BaseVersion):
         return self._pre
 
     @property
-    def post(self) -> int | None:
+    def post(self) -> Optional[int]:
         """The post-release number of the version.
 
         >>> print(Version("1.2.3").post)
@@ -935,7 +949,7 @@ class Version(_BaseVersion):
         return self._post[1] if self._post else None
 
     @property
-    def dev(self) -> int | None:
+    def dev(self) -> Optional[int]:
         """The development number of the version.
 
         >>> print(Version("1.2.3").dev)
@@ -946,7 +960,7 @@ class Version(_BaseVersion):
         return self._dev[1] if self._dev else None
 
     @property
-    def local(self) -> str | None:
+    def local(self) -> Optional[str]:
         """The local version segment of the version.
 
         >>> print(Version("1.2.3").local)
@@ -1070,7 +1084,7 @@ class Version(_BaseVersion):
 class _TrimmedRelease(Version):
     __slots__ = ()
 
-    def __init__(self, version: str | Version) -> None:
+    def __init__(self, version: Union[str, Version]) -> None:
         if isinstance(version, Version):
             self._epoch = version._epoch
             self._release = version._release
@@ -1083,7 +1097,7 @@ class _TrimmedRelease(Version):
         super().__init__(version)  # pragma: no cover
 
     @property
-    def release(self) -> tuple[int, ...]:
+    def release(self) -> Tuple[int, ...]:
         """
         Release segment without any trailing zeros.
 
@@ -1102,8 +1116,8 @@ class _TrimmedRelease(Version):
 
 
 def _parse_letter_version(
-    letter: str | None, number: str | bytes | SupportsInt | None
-) -> tuple[str, int] | None:
+    letter: Optional[str], number: Union[str, bytes, SupportsInt, None]
+) -> Optional[Tuple[str, int]]:
     if letter:
         # We normalize any letters to their lower case form
         letter = letter.lower()
@@ -1128,7 +1142,7 @@ def _parse_letter_version(
 _local_version_separators = re.compile(r"[\._-]")
 
 
-def _parse_local_version(local: str | None) -> LocalType | None:
+def _parse_local_version(local: Optional[str]) -> Optional[LocalType]:
     """
     Takes a string like ``"abc.1.twelve"`` and turns it into
     ``("abc", 1, "twelve")``.
@@ -1156,11 +1170,11 @@ _STABLE_SUFFIX = (_PRE_RANK_STABLE, 0, 0, 0, 1, 0)
 
 def _cmpkey(
     epoch: int,
-    release: tuple[int, ...],
-    pre: tuple[str, int] | None,
-    post: tuple[str, int] | None,
-    dev: tuple[str, int] | None,
-    local: LocalType | None,
+    release: Tuple[int, ...],
+    pre: Optional[Tuple[str, int]],
+    post: Optional[Tuple[str, int]],
+    dev: Optional[Tuple[str, int]],
+    local: Optional[LocalType],
 ) -> CmpKey:
     """Build a comparison key for PEP 440 ordering.
 

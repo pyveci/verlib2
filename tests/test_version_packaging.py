@@ -2,25 +2,29 @@
 # 2.0, and the BSD License. See the LICENSE file in the root of this repository
 # for complete details.
 
-from __future__ import annotations
-
 import itertools
 import operator
 import pickle
 import sys
 import typing
+from typing import Callable, Dict, Optional, Tuple
 
 import pretend
 import pytest
 
-from packaging._structures import Infinity, NegativeInfinity
-from packaging.version import (
+from verlib2.packaging._structures import Infinity, NegativeInfinity
+from verlib2.packaging.version import (
     InvalidVersion,
     Version,
     _BaseVersion,
     _VersionReplace,
     parse,
 )
+
+try:
+    from typing import Protocol
+except ImportError:
+    from typing_extensions import Protocol
 
 if typing.TYPE_CHECKING:
     from collections.abc import Callable
@@ -32,12 +36,12 @@ if sys.version_info >= (3, 13):
 else:
     T = typing.TypeVar("T")
 
-    class SupportsReplace(typing.Protocol):
-        def __replace__(self, **kwargs: Unpack[_VersionReplace]) -> Self: ...
+    class SupportsReplace(Protocol):
+        def __replace__(self, **kwargs: "Unpack[_VersionReplace]") -> "Self": ...
 
     S = typing.TypeVar("S", bound="SupportsReplace")
 
-    def replace(item: S, **kwargs: Unpack[_VersionReplace]) -> S:
+    def replace(item: S, **kwargs: "Unpack[_VersionReplace]") -> S:
         return item.__replace__(**kwargs)
 
 
@@ -206,14 +210,27 @@ class TestVersion:
             "1.0.",
             ".1.0",
             "1..2.3",
-            # Local version which includes a non-ASCII letter that matches
-            # regex '[a-z]' when re.IGNORECASE is in force and re.ASCII is not
-            "1.0+\u0130",
         ],
     )
     def test_invalid_versions(self, version: str) -> None:
         with pytest.raises(InvalidVersion):
             Version(version)
+
+    def test_invalid_versions_new_python(self) -> None:
+        is_old_python = (
+            True
+            if (sys.implementation.name == "cpython" and sys.version_info < (3, 11, 5))
+            or (sys.implementation.name == "pypy" and sys.version_info < (3, 11, 13))
+            or sys.version_info < (3, 11)
+            else False
+        )
+        if is_old_python:
+            pytest.skip("Test does not work on older Python versions")  # ty: ignore[too-many-positional-arguments, unused-ignore-comment, unused-ignore-comment]
+
+        # Local version which includes a non-ASCII letter that matches
+        # regex '[a-z]' when re.IGNORECASE is in force and re.ASCII is not
+        with pytest.raises(InvalidVersion):
+            Version("1.0+\u0130")
 
     @pytest.mark.skipif(
         not hasattr(sys, "get_int_max_str_digits"),
@@ -570,7 +587,7 @@ class TestVersion:
             ("1!1.0.post5+deadbeef", (1, 0)),
         ],
     )
-    def test_version_release(self, version: str, release: tuple[int, int]) -> None:
+    def test_version_release(self, version: str, release: Tuple[int, int]) -> None:
         assert Version(version).release == release
 
     @pytest.mark.parametrize(
@@ -607,7 +624,7 @@ class TestVersion:
             ("1!1.0.post5+deadbeef", "deadbeef"),
         ],
     )
-    def test_version_local(self, version: str, local: str | None) -> None:
+    def test_version_local(self, version: str, local: Optional[str]) -> None:
         assert Version(version).local == local
 
     @pytest.mark.parametrize(
@@ -644,7 +661,7 @@ class TestVersion:
             ("1!1.0.post5+deadbeef", None),
         ],
     )
-    def test_version_pre(self, version: str, pre: None | tuple[str, int]) -> None:
+    def test_version_pre(self, version: str, pre: Optional[Tuple[str, int]]) -> None:
         assert Version(version).pre == pre
 
     @pytest.mark.parametrize(
@@ -711,7 +728,7 @@ class TestVersion:
             ("1!1.0.post5+deadbeef", None),
         ],
     )
-    def test_version_dev(self, version: str, dev: int | None) -> None:
+    def test_version_dev(self, version: str, dev: Optional[int]) -> None:
         assert Version(version).dev == dev
 
     @pytest.mark.parametrize(
@@ -785,7 +802,7 @@ class TestVersion:
             ("1!1.0.post5+deadbeef", 5),
         ],
     )
-    def test_version_post(self, version: str, post: int | None) -> None:
+    def test_version_post(self, version: str, post: Optional[int]) -> None:
         assert Version(version).post == post
 
     @pytest.mark.parametrize(
@@ -1117,17 +1134,17 @@ class TestVersion:
     def test_replace_invalid_epoch_type(self) -> None:
         v = Version("1.2.3")
         with pytest.raises(InvalidVersion, match="epoch must be non-negative"):
-            replace(v, epoch="1")  # type: ignore[arg-type]
+            replace(v, epoch="1")  # ty: ignore[invalid-argument-type]
 
     def test_replace_invalid_post_type(self) -> None:
         v = Version("1.2.3")
         with pytest.raises(InvalidVersion, match="post must be non-negative"):
-            replace(v, post="1")  # type: ignore[arg-type]
+            replace(v, post="1")  # ty: ignore[invalid-argument-type]
 
     def test_replace_invalid_dev_type(self) -> None:
         v = Version("1.2.3")
         with pytest.raises(InvalidVersion, match="dev must be non-negative"):
-            replace(v, dev="1")  # type: ignore[arg-type]
+            replace(v, dev="1")  # ty: ignore[invalid-argument-type]
 
     def test_replace_invalid_epoch_negative(self) -> None:
         v = Version("1.2.3")
@@ -1159,11 +1176,11 @@ class TestVersion:
     def test_replace_invalid_pre_format(self) -> None:
         v = Version("1.2.3")
         with pytest.raises(InvalidVersion, match="pre must be a tuple"):
-            replace(v, pre="a1")  # type: ignore[arg-type]
+            replace(v, pre="a1")  # ty: ignore[invalid-argument-type]
         with pytest.raises(InvalidVersion, match="pre must be a tuple"):
-            replace(v, pre=("a",))  # type: ignore[arg-type]
+            replace(v, pre=("a",))  # ty: ignore[invalid-argument-type]
         with pytest.raises(InvalidVersion, match="pre must be a tuple"):
-            replace(v, pre=("a", 1, 2))  # type: ignore[arg-type]
+            replace(v, pre=("a", 1, 2))  # ty: ignore[invalid-argument-type]
 
     def test_replace_invalid_post_negative(self) -> None:
         v = Version("1.2.3")
@@ -1191,7 +1208,7 @@ class TestVersion:
 def reset_version_parts(version: Version, **kwargs: typing.Any) -> None:  # noqa: ANN401
     # https://github.com/pypa/packaging/blob/20.9/packaging/version.py#L301-L310
     internal_version = version._version
-    parts: dict[str, typing.Any] = {}
+    parts: Dict[str, typing.Any] = {}
     ordered_part_names = ("epoch", "release", "pre", "post", "dev", "local")
 
     reset = False
@@ -1256,7 +1273,7 @@ def test_hatchling_usage__version() -> None:
         ),
     ],
 )
-def test_from_parts(args: dict[str, typing.Any], string: str) -> None:
+def test_from_parts(args: Dict[str, typing.Any], string: str) -> None:
     v = Version.from_parts(**args)
     assert v == Version(string)
 

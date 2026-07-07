@@ -110,7 +110,12 @@ lint.select = [
   "YTT",
 ]
 lint.ignore = [ "RET505" ]
-lint.per-file-ignores."tests/*" = [ "S101" ]  # Use of `assert` detected
+lint.per-file-ignores."tests/*" = [
+  # Use of `assert` detected
+  "S101",
+  # `pickle` and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue
+  "S301",
+]
 
 [tool.pytest]
 ini_options.minversion = "2.0"
