@@ -165,7 +165,7 @@ tasks.release = [
 
 [tool.versioningit]
 vcs.method = "git-archive"
-vcs.default-tag = "v0.0.0"
+vcs.default-tag = "v0.0"
 vcs.describe-subst = "$Format:%(describe:tags,match=v*)$"
 # Emit PyPI-compatible "dirty" version strings. `+` characters are unsuitable, because
 # they would designate local version identifiers, which do not upload to PyPI.

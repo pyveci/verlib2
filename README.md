@@ -69,6 +69,12 @@ from verlib2.distutils.version import LooseVersion, StrictVersion
 from verlib2.packaging.version import Version
 ```
 
+## Versioning
+
+The version numbering of [verlib2] follows that of the [packaging] package,
+because most changes to `verlib2.packaging.version` are mirroring corresponding
+updates to `packaging.version`.
+
 ## Acknowledgements
 
 Alyssa Coghlan, Andrew Kuchling, Donald Stufft, Greg Stein, Greg Ward, Tarek Ziadé,
@@ -115,6 +121,7 @@ excellent development tooling.
 [Distutils]: https://pypi.org/project/Distutils/
 [distutils2]: https://hg.python.org/distutils2
 [distutilsversion]: http://bitbucket.org/tarek/distutilsversion/
+[packaging]: https://pypi.org/project/packaging/
 [packaging.version]: https://github.com/pypa/packaging/blob/main/src/packaging/version.py
 [pep440]: https://pypi.org/project/pep440/
 [pep440deb]: https://pypi.org/project/pep440deb/
