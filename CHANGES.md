@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+
+## 2026-07-08 v26.0
 - Maintenance: Updated to `packaging.version` v26.0
 - packaging.version: Restored backward-compatibility with `distutils.version`
 - packaging.version: Removed PEP 570 compatibility to support EOL Pythons
