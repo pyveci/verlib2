@@ -1080,6 +1080,13 @@ class Version(_BaseVersion):
         """
         return self.release[2] if len(self.release) >= 3 else 0
 
+    @property
+    def version(self) -> Tuple[int, ...]:
+        """
+        Return version tuple for backward-compatibility with `distutils.version`.
+        """
+        return self.release
+
 
 class _TrimmedRelease(Version):
     __slots__ = ()
