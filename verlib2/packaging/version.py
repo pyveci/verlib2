@@ -303,7 +303,7 @@ def _validate_pre(value: object) -> Optional[Tuple[Literal["a", "b", "rc"], int]
         letter = normalize_pre(cast(str, letter))
         if letter in {"a", "b", "rc"} and isinstance(number, int) and number >= 0:
             # type checkers can't infer the Literal type here on letter
-            return (letter, number)  # ty: ignore[invalid-return-type]
+            return (letter, number)
     msg = f"pre must be a tuple of ('a'|'b'|'rc', non-negative int), got {value}"
     raise InvalidVersion(msg)
 
