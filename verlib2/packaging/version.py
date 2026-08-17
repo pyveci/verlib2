@@ -290,7 +290,7 @@ def _validate_release(value: object) -> Tuple[int, ...]:
         and len(release) > 0
         and all(isinstance(i, int) and i >= 0 for i in release)
     ):
-        return release  # ty: ignore[invalid-return-type]
+        return release
     msg = f"release must be a non-empty tuple of non-negative integers, got {release}"
     raise InvalidVersion(msg)
 
@@ -798,36 +798,36 @@ class Version(_BaseVersion):
             if len(state) == 6:
                 # New format (26.2+): (epoch, release, pre, post, dev, local)
                 (
-                    self._epoch,  # ty: ignore
-                    self._release,  # ty: ignore
-                    self._pre,  # ty: ignore
-                    self._post,  # ty: ignore
-                    self._dev,  # ty: ignore
-                    self._local,  # ty: ignore
+                    self._epoch,
+                    self._release,
+                    self._pre,
+                    self._post,
+                    self._dev,
+                    self._local,
                 ) = state
                 return
             if len(state) == 2:
                 # Format (packaging 26.0-26.1): (None, {slot: value}).
                 _, slot_dict = state
                 if isinstance(slot_dict, dict):
-                    self._epoch = slot_dict["_epoch"]  # ty: ignore
-                    self._release = slot_dict["_release"]  # ty: ignore
-                    self._pre = slot_dict.get("_pre")  # ty: ignore
-                    self._post = slot_dict.get("_post")  # ty: ignore
-                    self._dev = slot_dict.get("_dev")  # ty: ignore
-                    self._local = slot_dict.get("_local")  # ty: ignore
+                    self._epoch = slot_dict["_epoch"]
+                    self._release = slot_dict["_release"]
+                    self._pre = slot_dict.get("_pre")
+                    self._post = slot_dict.get("_post")
+                    self._dev = slot_dict.get("_dev")
+                    self._local = slot_dict.get("_local")
                     return
         if isinstance(state, dict):
             # Old format (packaging <= 25.x, no __slots__): state is a plain
             # dict with "_version" (_Version NamedTuple) and "_key" entries.
             version_nt = state.get("_version")
             if version_nt is not None:
-                self._epoch = version_nt.epoch  # ty: ignore
-                self._release = version_nt.release  # ty: ignore
-                self._pre = version_nt.pre  # ty: ignore
-                self._post = version_nt.post  # ty: ignore
-                self._dev = version_nt.dev  # ty: ignore
-                self._local = version_nt.local  # ty: ignore
+                self._epoch = version_nt.epoch
+                self._release = version_nt.release
+                self._pre = version_nt.pre
+                self._post = version_nt.post
+                self._dev = version_nt.dev
+                self._local = version_nt.local
                 return
 
         raise TypeError(f"Cannot restore Version from {state!r}")
