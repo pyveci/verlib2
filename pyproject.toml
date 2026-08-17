@@ -130,12 +130,12 @@ ini_options.log_level = "DEBUG"
 ini_options.log_cli_level = "DEBUG"
 
 [tool.coverage]
-run.branch = true
 run.omit = [
   "tests/*",
 ]
-report.exclude_lines = [ "pragma: no cover" ]
+run.branch = true
 report.fail_under = 0
+report.exclude_lines = [ "pragma: no cover" ]
 report.show_missing = true
 
 [tool.poe]
