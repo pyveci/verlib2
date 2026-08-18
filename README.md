@@ -57,7 +57,7 @@ pip install verlib2
 ```python
 from verlib2 import Version
 
-assert Version("1.0.dev456") < Version("1!1.2.rev33+123456") 
+assert Version("1.0.dev456") < Version("1!1.2.rev33+123456")
 ```
 
 Note: The `verlib2.Version` symbol links to `verlib2.packaging.version`,
