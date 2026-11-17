@@ -14,12 +14,12 @@ __license__ = "BSD-2-Clause or Apache-2.0"
 __copyright__ = "2014 %s" % __author__
 
 try:
-    from importlib.metadata import (  # ty: ignore[unresolved-import, unused-ignore-comment, unused-ignore-comment]
+    from importlib.metadata import (  # ty: ignore[import-not-found, unused-ignore-comment, unused-ignore-comment]
         PackageNotFoundError,
         version,
     )
 except (ImportError, ModuleNotFoundError):  # pragma:nocover
-    from importlib_metadata import (  # ty: ignore[unresolved-import]
+    from importlib_metadata import (  # ty: ignore[import-not-found]
         PackageNotFoundError,
         version,
     )
